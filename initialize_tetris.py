@@ -16,7 +16,6 @@ class Main:
     def __init__(self): 
 
         pygame.font.init()
-        self.piece = Piece()
         self.shapes = Shapes()
         self.settings = Settings()
 
@@ -30,7 +29,7 @@ class Main:
                     grid[i][j] = c 
 
         return grid
-                    
+            
     
     def convert_shape_format(self,shape):
         positions = []
