@@ -1,5 +1,7 @@
 To Do List:
 1. refactor code 
+    - move functions from initialize
+    - move parameters to main
 2. improve ui 
 3. high score display
 4. space bar functionality

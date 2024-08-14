@@ -1,6 +1,9 @@
 import pygame
 import random
 import sys
+from piece import Piece
+from shapes import Shapes
+from settings import Settings
 # creating the data structure for pieces
 # setting up global vars
 # functions
@@ -18,134 +21,18 @@ represented in order by 0 - 6
 pygame.font.init()
  
 # GLOBALS VARS
-s_width = 800
-s_height = 700
-play_width = 300  # meaning 30 width per block
-play_height = 600  # meaning 20 height per block
-block_size = 30
- 
-top_left_x = (s_width - play_width) // 2
-top_left_y = s_height - play_height
+settings = Settings()
+shapes = Shapes()
+
  
  
 # SHAPE FORMATS
- 
-S = [['.....\\',\
-      '.....\\',\
-      '..00.\\',\
-      '.00..\\',\
-      '.....\\'],\
-      ['.....\\',\
-       '..0..\\',\
-      '..00.\\',\
-      '...0.\\',\
-      '.....\\']]
- 
-Z = [['.....\\',\
-      '.....\\',\
-      '.00..\\',\
-      '..00.\\',\
-      '.....\\'],
-     ['.....\\',\
-      '..0..\\',\
-      '.00..\\',\
-      '.0...\\',\
-      '.....\\']]
- 
-I = [['..0..\\',\
-      '..0..\\',\
-      '..0..\\',\
-      '..0..\\',\
-      '.....\\'],
-     ['.....\\',\
-      '0000.\\',\
-      '.....\\',\
-      '.....\\',\
-      '.....\\']]
- 
-O = [['.....\\',\
-      '.....\\',\
-      '.00..\\',\
-      '.00..\\',\
-      '.....\\']]
- 
-J = [['.....\\',\
-      '.0...\\',\
-      '.000.\\',\
-      '.....\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '..00.\\',\
-      '..0..\\',\
-      '..0..\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '.....\\',\
-      '.000.\\',\
-      '...0.\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '..0..\\',\
-      '..0..\\',\
-      '.00..\\',\
-      '.....\\']]
- 
-L = [['.....\\',\
-      '...0.\\',\
-      '.000.\\',\
-      '.....\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '..0..\\',\
-      '..0..\\',\
-      '..00.\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '.....\\',\
-      '.000.\\',\
-      '.0...\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '.00..\\',\
-      '..0..\\',\
-      '..0..\\',\
-      '.....\\']]
- 
-T = [['.....\\',\
-      '..0..\\',\
-      '.000.\\',\
-      '.....\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '..0..\\',\
-      '..00.\\',\
-      '..0..\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '.....\\',\
-      '.000.\\',\
-      '..0..\\',\
-      '.....\\'],\
-     ['.....\\',\
-      '..0..\\',\
-      '.00..\\',\
-      '..0..\\',\
-      '.....\\']]
 
-shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+
 # index 0 - 6 represent shape
  
  
-class Piece(object):
-    
-    def __init__(self, x, y, shape):
-        self.x = x 
-        self.y = y 
-        self.shape = shape
-        self.color = shape_colors[shapes.index(shape)]
-        self.rotation = 0 
- 
+
 def create_grid(locked_pos={}):
     grid = [[(0,0,0) for _ in range(10)] for _ in range(20)]
     
@@ -194,26 +81,26 @@ def check_lost(positions):
     return False
  
 def get_shape():
-    return Piece(5, 0, random.choice(shapes))
+    return Piece(5, 0, random.choice(shapes.shapes))
  
  
 def draw_text_middle(text, size, color, surface):
    font = pygame.font.SysFont('arial',size)
    label = font.render(text, 1, color)
 
-   surface.blit(label,(top_left_x + play_width/2 - (label.get_width()/2),\
-                       top_left_y + play_height/2 - label.get_height()/2) )
+   surface.blit(label,(settings.top_left_x + settings.play_width/2 - (label.get_width()/2),\
+                       settings.top_left_y + settings.play_height/2 - label.get_height()/2) )
    
 def draw_grid(surface, grid):
     
-    sx = top_left_x
-    sy = top_left_y
+    sx = settings.top_left_x
+    sy = settings.top_left_y
 
     for i in range(len(grid)): 
-        pygame.draw.line(surface, (128,128,128), (sx,sy+i*block_size),(sx+play_width,sy + i*block_size))
+        pygame.draw.line(surface, (128,128,128), (sx,sy+i*settings.block_size),(sx+settings.play_width,sy + i*settings.block_size))
         for j in range(len(grid[i])): 
-            pygame.draw.line(surface, (128,128,128), (sx + j*block_size,sy),\
-                             (sx + j*block_size,sy + play_height))
+            pygame.draw.line(surface, (128,128,128), (sx + j*settings.block_size,sy),\
+                             (sx + j*settings.block_size,sy + settings.play_height))
     
 def clear_rows(grid, locked):
     
@@ -238,11 +125,11 @@ def clear_rows(grid, locked):
     return inc
  
 def update_score(new_score): 
-    with open('high_score.text','r') as f: 
+    with open("tetris/high_score.txt","r") as f: 
         lines = f.readlines()
         score = lines[0].strip()
     
-    with open('high_score.text','w') as f: 
+    with open("tetris/high_score.txt",'w') as f: 
         if int(score) > new_score:
             f.write(str(score))
         else:
@@ -254,15 +141,15 @@ def draw_next_shape(shape, surface):
     font = pygame.font.SysFont('comicsans',30)
     label = font.render('Next Shape', 1, (255,255,255))
 
-    sx = top_left_x + play_width
-    sy = top_left_y + play_height/2
+    sx = settings.top_left_x + settings.play_width
+    sy = settings.top_left_y + settings.play_height/2
     format = shape.shape[shape.rotation % len(shape.shape)]
  
     for i, line in enumerate(format): 
         row = list(line)
         for j, column in enumerate(row): 
             if column == '0': 
-                pygame.draw.rect(surface, shape.color, (sx + j*block_size, sy + i*block_size, block_size, block_size),0)
+                pygame.draw.rect(surface, shape.color, (sx + j*settings.block_size, sy + i*settings.block_size, settings.block_size, settings.block_size),0)
     
     surface.blit(label, (sx + 10, sy - 30))
 
@@ -274,23 +161,23 @@ def draw_window(surface,grid,score=0):
     font = pygame.font.SysFont('comicsans',60)
     label = font.render('Tetris',1,(255,255,255))
 
-    surface.blit(label,(top_left_x + play_width/2 - (label.get_width()/2),30))
+    surface.blit(label,(settings.top_left_x + settings.play_width/2 - (label.get_width()/2),30))
 
     for i in range(len(grid)): 
         for j in range(len(grid[i])):
             pygame.draw.rect(surface, grid[i][j],\
-                        (top_left_x + j*block_size, top_left_y + i*block_size,\
-                        block_size, block_size),0)
+                        (settings.top_left_x + j*settings.block_size, settings.top_left_y + i*settings.block_size,\
+                        settings.block_size, settings.block_size),0)
 
     # do we need a create grid here as well? 
     draw_grid(surface,grid)
-    pygame.draw.rect(surface, (255,0,0),(top_left_x,top_left_y,play_width,play_height),5)
+    pygame.draw.rect(surface, (255,0,0),(settings.top_left_x,settings.top_left_y,settings.play_width,settings.play_height),5)
 
     font = pygame.font.SysFont('arial',30)
     label = font.render('score: ' + str(score), 1, (255,255,255))
 
-    sx = top_left_x + play_width + 50 
-    sy = top_left_y + play_height/2 - 100 
+    sx = settings.top_left_x + settings.play_width + 50 
+    sy = settings.top_left_y + settings.play_height/2 - 100 
 
     surface.blit(label,(sx + 10,sy + 200))
 
@@ -403,6 +290,6 @@ def main_menu(win):
     pygame.display.quit()
 
 
-win = pygame.display.set_mode((s_width,s_height))
+win = pygame.display.set_mode((settings.s_width,settings.s_height))
 pygame.display.set_caption('Tetris')
 main_menu(win)  # start game
