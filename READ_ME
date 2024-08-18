@@ -1,10 +1,8 @@
 To Do List:
-1. refactor code 
-    - move functions from initialize
-    - move parameters to main
-2. improve ui 
-3. high score display
-4. space bar functionality
-5. pause functionality
-6. instant drop
-7. colours and sound effects
+1. refactor: 
+    - score functions
+    - shape operations
+2. comment code
+3. pause functionality
+4. sound effects 
+5. object move
